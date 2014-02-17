@@ -1,0 +1,5 @@
+[
+    {   "caption": "Validate KRL",
+        "command": "validate_krl"
+    }
+]
