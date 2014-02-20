@@ -24,9 +24,13 @@ class ValidateKrlCommand(sublime_plugin.TextCommand):
 		krl = self.view.substr(sublime.Region(0, self.view.size()))
 		url = 'http://cs.kobj.net/manage/validate/'
 		values = urllib.parse.urlencode({'rule': krl, 'flavor': 'json'})
-		response = urllib.request.urlopen(url, values.encode('latin-1')).read().decode('utf-8')
-
-		self.waiting = False
+		try:
+			response = urllib.request.urlopen(url, values.encode('latin-1')).read().decode('utf-8')
+		except urllib.error.HTTPError:
+			sublime.status_message('KRL Validator: HTTP error')
+			return
+		finally:
+			self.waiting = False
 
 		# The response uses a couple of single quotes, so it isn't valid JSON. Replace
 		# with double quotes and parse JSON.
